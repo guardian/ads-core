@@ -45,6 +45,14 @@ export default merge(config, {
 	],
 	optimization: {
 		minimize: true,
-		minimizer: [new TerserPlugin()],
+		minimizer: [
+			new TerserPlugin({
+				minify: TerserPlugin.swcMinify,
+				terserOptions: {
+					mangle: true,
+					compress: true,
+				},
+			}),
+		],
 	},
 });

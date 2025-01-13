@@ -1,5 +1,8 @@
 import { join } from 'path';
+import browserslist from 'browserslist';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
+
+const targets = browserslist('extends @guardian/browserslist-config');
 
 /**
  * @type {import('webpack').Configuration}
@@ -25,24 +28,28 @@ const config = {
 			svgs: join(import.meta.dirname, 'static', 'svg'),
 			lodash: 'lodash-es',
 		},
-		extensions: ['.js', '.ts', '.tsx', '.jsx'],
+		extensions: ['.js', '.ts'],
 	},
 	module: {
 		rules: [
 			{
-				test: /\.[jt]sx?|mjs$/,
+				test: /\.[jt]s|mjs$/,
 				use: [
 					{
-						loader: 'babel-loader',
-					},
-					{
-						loader: 'ts-loader',
+						loader: 'swc-loader',
 						options: {
-							transpileOnly: true,
-							configFile: join(
-								import.meta.dirname,
-								'tsconfig.json',
-							),
+							$schema: 'http://json.schemastore.org/swcrc',
+							jsc: {
+								parser: {
+									syntax: 'typescript',
+									dynamicImport: true,
+								},
+							},
+							sourceMaps: true,
+							env: {
+								dynamicImport: true,
+								targets,
+							},
 						},
 					},
 				],
