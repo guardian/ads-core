@@ -244,8 +244,17 @@ const initPermutiveSegmentation = () => {
 	runPermutive(permutiveConfig, window.permutive);
 };
 
+const getAlreadyVisitedCount = (): number => {
+	const alreadyVisited = parseInt(
+		localStorage.getItem('gu.alreadyVisited') ?? '',
+		10,
+	);
+	return !Number.isNaN(alreadyVisited) ? alreadyVisited : 0;
+};
+
 export const initPermutive = () => {
-	if (window.guardian.config.switches.permutive) {
+	const visitedCount = getAlreadyVisitedCount();
+	if (window.guardian.config.switches.permutive && visitedCount > 1) {
 		void initPermutiveSegmentation();
 	}
 	return Promise.resolve();
